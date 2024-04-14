@@ -1,131 +1,153 @@
 
 # SISTEMA DE BANKING - DEIVID BANK
 
-init_message = """
+# PARA CADASTRAR - NOVOS USUÁRIOS
+conta = ''
+nome = ''
+data_nascimento = ''
+cpf = ''
+endereco = ''
 
-====================================
--     DEIVID BANKING (ONLINE)      -
-====================================
--                                  -
--     SEJA MUITO BEM-VINDO !!      -
--                                  -
-====================================
-
-"""
-
-username = ""
-cpf_user = ""
-pin_user = ""
-
-dadosCliente = {
-    "Username": username,
-    "CPF": pin_user,
-    "Senha": cpf_user,
-    "SAQUE": [],
-    "DEPÓSITO": []
+# LISTA DE USUÁRIOS
+usuarios = {
+    conta: [],
+    nome: [],
+    data_nascimento: [],
+    cpf: [],
+    endereco: []
 }
 
-signin_message = f"""
 
-======================================
--     DEIVID BANKING (ONLINE)        -
-======================================
--                                    
--       ! Realize seu login:           
--                                    
--       -> NOME  [{username}]           
--       -> CPF   [{cpf_user}]           
--       -> PIN   [{pin_user}]           
--                                    
-======================================
- 
-"""
-
-welcome_message = f"""
+incio = """
 
 ====================================
 -     DEIVID BANKING (ONLINE)      -
 ====================================
 -                                  
 -     SEJA MUITO BEM-VINDO !!      
--     -> {username}      
+-                                  
+-     1 - FAÇA JÁ SEU CADASTRO!                 
+-     2 - JÁ SOU USUÁRIO                 
 -                                  
 ====================================
 
 """
-
-option_message = """
-
+optionUser = """
 ====================================
 -     DEIVID BANKING (ONLINE)      -
 ====================================
--                                  -
--     O que você precisa  ??       -
--                                  -
--     1 -> SAQUE                   -
--     2 -> DEPÓSITO                -
--     3 -> EXTRATO                 -
--     4 -> SAIR                    -
--                                  -
+-                                  
+-     O que você precisa  ??       
+-                                  
+-     1 -> SAQUE                   
+-     2 -> DEPÓSITO               
+-     3 -> EXTRATO                 
+-     4 -> SAIR                   
+-                                  
 ====================================
 
-R: 
-"""
+R: """
 
-def menu_iniciar():
-    print(init_message)
+# OPÇÕES DE EXTRATO
+extrato_final = '' 
+def printExtrato():
+    
+    if len(extrato) == 0:
+        "Não foram realizadas movimentações." 
+    else:
+        for movimentacao in extrato:
+            global extrato_final 
+            extrato_final = extrato_final + "" + f"-     {movimentacao}"
+          
+# VALIDAÇÃO DE SAC
+def validar_saque(*, valor, saldo, limite, numero_de_saques, limite_para_saques):
+    # VALOR MAIOR QUE O SAQUE
+    if valor > saldo:
+        print(f"\nVocê não possui saldo suficiente. \nValor do saque: R$ {valor}\nSaldo Atual: R$ {saldo}\n")
+        return False
+        
+    # VALOR MAIOR QUE O LIMITE
+    elif valor > limite:
+        print(f"\nO valor indicado para saque ultrapassou o limite. \nValor limite: R$ {limite} \nValor do saque: R$ {valor}\nSaldo Atual: R$ {saldo}\n")
+        return False
+    
+    # VALOR MAIOR/IGUAL A LIMITES DE SAQUES
+    elif numero_de_saques >= limite_para_saques:
+        quantidade_excedida = print(f"\nVocê excedeu a quantidade máxima de saques. \Limite de saques: R$ {limite_para_saques} \nValor do saque: R$ {valor}\nSaldo Atual: R$ {saldo}\n")
+        return False
+    
+    # SAQUE APROVADO
+    elif valor > 0:
+        print('\nProcessando...')
+        return True
+    
+    else:
+        print("\nO valor informado é inválido.")  
+ 
+# SAQUE E DEPÓSITO  
+def saque(*, saldo, valor, extrato, numero_de_saques):
+    print(f"\nSaldo anterior: R$ {saldo:.2f}")
+    saldo -= valor
+    numero_de_saques += 1
+    extrato.append(f"\nSaque: R$ {valor:.2f}\n")
+    return saldo, extrato
+def deposito(saldo, valor, extrato):
+    saldo += valor
+    extrato.append(f"Depósito: R$ {valor}\n")
+    return saldo, extrato
 
-    i = 0
-    while i <= 3:
+# MENU DO USUÁRIO    
+def menu_opcoes():
+    saldo_atual = 0
+    valor_limite = 500
+    saques_usados = 0
+    limite_de_saque = 3
+    extrato = []
+    
+    while True:
+        opcao = input(optionUser)
+        if opcao == "1":
+            valor_saque = float(input("Informe o valor do saque: R$"))        
+            validacao = validar_saque(saldo=saldo_atual, valor=valor_saque, limite=valor_limite, numero_de_saques=saques_usados, limite_para_saques=limite_de_saque)
 
-        global username, cpf_user, pin_user
+            if validacao == True:
+                saldo_atual, extrato = saque(saldo=saldo_atual, valor=valor_saque, extrato=extrato, numero_de_saques=saques_usados)
+                print(f"Valor do saque: R$ {valor_saque}\n -> Saldo Atual: R$ {saldo_atual}\n")
+            else:
+                print("Tente novamente.")
+        elif opcao == "2":
+            valor = float(input("Informe o valor do depósito: "))
+            if valor > 0:
+                saldo_atual, extrato = deposito(saldo_atual, valor, extrato)
+                print(f"Depósito: R$ {valor}\nSaldo Atual: R$ {saldo_atual}\n")
+            else:
+                print("Operação falhou! O valor informado é inválido.") 
+        elif opcao == "3":  
+            printExtrato()     
+            print(
+    f"""
+    ====================================
+    -     DEIVID BANKING (ONLINE)      -
+    ====================================
+    -                                  
+    -     Saldo: R$ {saldo_atual:.2f}   
+    -     
+    -     SUAS MOVIMENTAÇÕES:
+    -     \n{extrato_final}-
+    -
+    -                                  
+    ====================================
+    """)    
+            extrato_fim = "" # FAZENDO RESET PARA NÃO DUPLICAR VALORES
+        elif opcao == "4":
+            break
+        else:    
+            print("Operação inválida, por favor selecione novamente a operação desejada.")
 
-        # PEDINDO NOME
-        username = input(signin_message + "\nDigite seu nome: ").strip()
-        i += 1
+# ESTRTUTURA PRINCIPAL
+def main():  
+    
+    menu_opcoes()
+main()         
 
-        # PEDINDO CPF
-        cpf_user = input(signin_message + "\nDigite seu CPF: ").strip()
-        i += 1
-
-        pin_user = input(signin_message + "\nDigite sua senha: ").strip()
-        i += 1
-
-        return signin_message
-
-
-
-menu_iniciar()
-
-
-# -> USUÁRIO
-# SAQUE, EXTRATO E DEPÓSITO
-
-
-
-
-
-
-
-
-
-
-
-
-
-# ------
-# DEPÓSITO:
-# VALORES POSITIVOS.
-# ARMAZENAR EM 'BD'
-
-# ------
-# SAQUE:
-# 3 SAQUES
-# VALORES DE ATÉ 500,0 (CDA)
-# ARMAZENAR EM 'BD'
-
-
-# ------
-# EXTRATO:
-# INFORMAÇÕES = 'BD'
-# FORMATAÇÃO MONETÁRIA `R$ XXXX.XX`
+            
