@@ -1,23 +1,29 @@
 
 # SISTEMA DE BANKING - DEIVID BANK
 
-# PARA CADASTRAR - NOVOS USUÁRIOS
-conta = ''
-nome = ''
-data_nascimento = ''
-cpf = ''
-endereco = ''
+def armazenarDados(usuarios, nome, data_nacimento, cpf, endereco, tipo_contrato, senha_usuario):
+    pass
 
-# LISTA DE USUÁRIOS
-usuarios = {
-    conta: [],
-    nome: [],
-    data_nascimento: [],
-    cpf: [],
-    endereco: []
-}
+def validacao_senha():
+    pass
 
+def validacao_endereo():
+    pass
 
+def validacao_cpf():
+    pass
+
+def cadastrar():
+    nome = str(input("\nPrimeito digite seu nome completo. \nNome:")).strip().title()
+    data_nascimento = str(input("\nDigite sua data de nacimento (Dia/Mês/Ano) \nData de Nacimento:"))
+    cpf = int(input('\nDigite seu CPF (Sem pontuação, apenas números) \nR:'))
+    endereco = str(input('Digite seu endereço completo (Logradouro, Numero, Bairro - Cidade/Sigla)'))
+    tipo_contrato = str(input('Seu contrato é CORPORATIVO OU PESSOAL ? R:'))
+    senha_usuario = str(input('Digite sua senha: '))
+
+def loginUsuario(nome, cpf, senha_usuario):
+    pass
+    
 incio = """
 
 ====================================
@@ -31,7 +37,8 @@ incio = """
 -                                  
 ====================================
 
-"""
+Nome Completo:"""
+
 optionUser = """
 ====================================
 -     DEIVID BANKING (ONLINE)      -
@@ -48,9 +55,13 @@ optionUser = """
 
 R: """
 
+def confirmacoes_user():
+    optionInicial = input(incio)
+    if optionInicial == '1':
+        cadastrar()
+
 # OPÇÕES DE EXTRATO
-extrato_final = '' 
-def printExtrato():
+def printExtrato(extrato):
     
     if len(extrato) == 0:
         "Não foram realizadas movimentações." 
@@ -123,21 +134,21 @@ def menu_opcoes():
             else:
                 print("Operação falhou! O valor informado é inválido.") 
         elif opcao == "3":  
-            printExtrato()     
+            printExtrato(extrato)     
             print(
-    f"""
-    ====================================
-    -     DEIVID BANKING (ONLINE)      -
-    ====================================
-    -                                  
-    -     Saldo: R$ {saldo_atual:.2f}   
-    -     
-    -     SUAS MOVIMENTAÇÕES:
-    -     \n{extrato_final}-
-    -
-    -                                  
-    ====================================
-    """)    
+f"""
+====================================
+-     DEIVID BANKING (ONLINE)      -
+====================================
+-                                  
+-     Saldo: R$ {saldo_atual:.2f}   
+-     
+-     SUAS MOVIMENTAÇÕES:
+-     \n{extrato_final}-
+-
+-                                  
+====================================
+""")    
             extrato_fim = "" # FAZENDO RESET PARA NÃO DUPLICAR VALORES
         elif opcao == "4":
             break
@@ -145,8 +156,33 @@ def menu_opcoes():
             print("Operação inválida, por favor selecione novamente a operação desejada.")
 
 # ESTRTUTURA PRINCIPAL
-def main():  
+def main():   
+       
+    # PARA CADASTRAR - NOVOS USUÁRIOS
+    conta = ''
+    nome = ''
+    data_nascimento = ''
+    cpf = ''
+    endereco = ''
+    tipo_contrato = ''
+    senha_usuario = ''
+
+    # LISTA DE USUÁRIOS
+    lista_usuarios = {
+        "usuarios_cadastrados": {
+            conta: [],
+            cpf: [],
+            nome: [],
+            data_nascimento: [],
+            tipo_contrato: [],
+            endereco: [],
+            senha_usuario: []
+        }
+    }
     
+    confirmacoes_user()
+    
+    extrato_final = '' 
     menu_opcoes()
 main()         
 
